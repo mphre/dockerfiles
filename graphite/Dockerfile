@@ -5,10 +5,14 @@ run	echo 'deb http://us.archive.ubuntu.com/ubuntu/ precise universe' >> /etc/apt
 run	apt-get -y update
 
 # Install required packages
-run	apt-get -y install python-ldap python-cairo python-django python-twisted python-django-tagging python-simplejson python-memcache python-pysqlite2 python-support python-pip gunicorn supervisor nginx-light
+run	apt-get -y install python-ldap python-cairo python-django python-twisted python-django-tagging python-simplejson python-memcache python-pysqlite2 python-support python-pip gunicorn supervisor nginx-light curl
 run	pip install whisper supervisor-stdout
 run	pip install --install-option="--prefix=/var/lib/graphite" --install-option="--install-lib=/var/lib/graphite/lib" carbon
 run	pip install --install-option="--prefix=/var/lib/graphite" --install-option="--install-lib=/var/lib/graphite/webapp" graphite-web
+run install -d /var/lib/grafana &&\
+    cd /tmp && curl -LO https://github.com/torkelo/grafana/releases/download/v1.5.1/grafana-1.5.1.tar.gz &&\
+    tar -xvzf grafana-1.5.1.tar.gz -C /var/lib/grafana &&\
+    rm -f grafana-1.5.1.tar.gz
 
 # Add system service config
 add	./nginx.conf /etc/nginx/nginx.conf
@@ -18,6 +22,9 @@ add	./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 add	./initial_data.json /var/lib/graphite/webapp/graphite/initial_data.json
 run echo break
 add	./local_settings.py /var/lib/graphite/webapp/graphite/local_settings.py
+
+# Add configuration for grafana webapp
+add ./config.js /var/lib/grafana/
 
 # Add config template for carbon. We'll be copying this to a volume.
 add	./carbon.conf /var/lib/graphite/conf/carbon.conf
