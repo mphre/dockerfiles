@@ -57,6 +57,6 @@ volume /var/log/supervisor/
 add docker_tools.sh /docker_tools.sh
 add start.sh        /start
 
-cmd	["/start", "/usr/bin/supervisord""]
+cmd	["/start", "/usr/bin/supervisord"]
 
 # vim:ts=8:noet:
