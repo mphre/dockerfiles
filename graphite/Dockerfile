@@ -39,7 +39,7 @@ run     mkdir -p /var/log/carbon && chown www-data /var/log/carbon
 # initialize the webapp
 run	cd /var/lib/graphite/webapp/graphite && python manage.py syncdb --noinput
 
-# Nginx
+# Nginx (grafana)
 expose	80
 # Carbon line receiver port
 expose	2003
@@ -47,6 +47,8 @@ expose	2003
 expose	2004
 # Carbon cache query port
 expose	7002
+# Nginx (graphite-web, still needed by grafana)
+expose  8001
 
 # carbon in debug mode is expected to log a lot, move out of container
 volume /var/log/supervisor/
